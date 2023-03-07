@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: 'postgres:latest'
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: devdb
+# for persistent volume map volume outside project folder
+#    volumes:
+#      - /home/stefan/Projects/DockerVolumes:/var/lib/postgresql/data/
+    networks:
+      - ingestor-network
+  ingestor:
+    container_name: ingestor
+    build: .
+    environment:
+      - PGHOST=db
+      - PGUSER=postgres
+      - PGPASSWORD=postgres
+      - PGPORT=5432
+      - PGDATABASE=devdb
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/devdb
+      - RPC_URL=http://ronin.tribally.xyz
+      - BLOCKS_TO_INGEST=10000
+      - BLOCKS_CHUNK_SIZE=100
+    depends_on:
+      - db
+    networks:
+      - ingestor-network
+networks:
+  ingestor-network:
+    driver: bridge
+    name: ingestor-network
