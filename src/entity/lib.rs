@@ -19,7 +19,7 @@ pub async fn db_conn() -> anyhow::Result<DatabaseConnection, DbErr> {
         .max_lifetime(Duration::from_secs(8))
         .sqlx_logging(false)
         .sqlx_logging_level(log::LevelFilter::Warn)
-        .set_schema_search_path("ronin".into()); // Setting default PostgreSQL schema
+        .set_schema_search_path::<String>("ronin".into()); // Setting default PostgreSQL schema
 
     Database::connect(opt).await
 }
