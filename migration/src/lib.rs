@@ -1,6 +1,6 @@
 use std::env;
 pub use sea_orm_migration::prelude::*;
-use crate::sea_orm::{ConnectionTrait, ConnectOptions, Database, DatabaseBackend, DatabaseConnection, Statement};
+use crate::sea_orm::{ConnectOptions, Database, DatabaseBackend, DatabaseConnection, Statement};
 
 mod m20230307_233531_initial_table;
 
@@ -24,7 +24,7 @@ pub async fn prepare_connection() -> DatabaseConnection {
 
 pub async fn create_db_conn(url: String) -> DatabaseConnection {
     let opts = ConnectOptions::new(url)
-        .set_schema_search_path("ronin".into())
+        .set_schema_search_path::<String>("ronin".into())
         .to_owned();
     let db = Database::connect(opts).await;
     db.expect("Couldn't create DB connection")
