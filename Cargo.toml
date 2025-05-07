@@ -10,6 +10,7 @@ tokio = { version = "1.45", features = ["full", "macros"] }
 log = "0.4"
 anyhow = { version = "1.0" }
 simple_logger = "5.0"
+openssl = "0.10"
 
 sea-orm = { version = "1.1", features = [ "sqlx-postgres", "runtime-tokio-native-tls", "macros", "debug-print" ] }
 migration = { path = "migration" }

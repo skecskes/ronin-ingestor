@@ -1,4 +1,4 @@
-FROM rust:1.67 as builder
+FROM rust:1.86 as builder
 RUN apt update && apt install -y protobuf-compiler && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/ronin
@@ -27,7 +27,7 @@ ENV PGPASSWORD="postgres"
 ENV PGPORT=5432
 ENV PGDATABASE="devdb"
 ENV DATABASE_URL="postgres://$POSTGRES_USER@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB"
-ENV RPC_URL="http://ronin.tribally.xyz"
+ENV RPC_URL="https://api.roninchain.com/rpc"
 ENV BLOCKS_TO_INGEST=10000
 ENV BLOCKS_CHUNK_SIZE=100
 
