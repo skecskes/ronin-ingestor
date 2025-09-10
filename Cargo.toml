@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 ethers = {version = "2.0.14", features = ["abigen", "ipc", "rustls", "ws"] }
 serde = { version = "1.0", features = ["derive"] }
-tokio = { version = "1.45", features = ["full", "macros"] }
+tokio = { version = "1.47", features = ["full", "macros"] }
 log = "0.4"
 anyhow = { version = "1.0" }
 simple_logger = "5.0"
