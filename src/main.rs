@@ -1,10 +1,9 @@
 mod web3;
-mod abi;
 mod entity;
 
 use std::env;
-use std::sync::Arc;
-use ethers::providers::{Http, Provider};
+use alloy::providers::RootProvider;
+use alloy::transports::http::reqwest::Url;
 use log::{error, LevelFilter};
 use simple_logger::SimpleLogger;
 use migration::{Migrator, MigratorTrait, prepare_connection};
@@ -21,14 +20,14 @@ async fn main() {
     let _migrated = Migrator::up(&db_conn, None).await;
 
     let rpc_url = &env::var("RPC_URL").expect("Invalid RPC URL in config");
-    let provider = Provider::<Http>::try_from(rpc_url).unwrap();
-    let client = Arc::new(provider);
+    let url: Url = rpc_url.parse().unwrap();
+    let client = RootProvider::new_http(url);
     let web3 = Web3{
         client,
         db_conn: entity::lib::db_conn().await.unwrap()
     };
 
-    let max_block = u64::try_from(web3.get_last_block().await).unwrap();
+    let max_block = web3.get_last_block().await;
     let blocks_to_ingest = env::var("BLOCKS_TO_INGEST").expect("User should define how many blocks to ingest").parse::<u64>().unwrap();
     let start_block = max_block - blocks_to_ingest;
     let blocks_chunk_size = env::var("BLOCKS_CHUNK_SIZE").expect("User should define batch size of one get_log call").parse::<u64>().unwrap();
@@ -41,7 +40,7 @@ async fn main() {
             Ok(logs) => {
                 println!("{} events found in blocks [{} - {}]", logs.iter().len(), from, to);
                 for log in logs.iter() {
-                    let contract = log.address;
+                    let contract = log.address();
                     if web3.is_erc20(&contract) {
                         web3.handle_erc20_transfer(&log).await;
                     } else {
