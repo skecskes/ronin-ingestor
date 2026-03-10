@@ -1,4 +1,4 @@
-FROM rust:1.86 as builder
+FROM rust:1.94 as builder
 RUN apt update && apt install -y protobuf-compiler && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/ronin
@@ -10,7 +10,8 @@ COPY ./Cargo.toml ./Cargo.toml
 
 RUN cargo --locked install --path . --profile release
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends libssl3 ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/cargo/bin/ingestor /usr/local/bin/ingestor
 
@@ -28,7 +29,7 @@ ENV PGPORT=5432
 ENV PGDATABASE="devdb"
 ENV DATABASE_URL="postgres://$POSTGRES_USER@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB"
 ENV RPC_URL="https://api.roninchain.com/rpc"
-ENV BLOCKS_TO_INGEST=10000
+ENV BLOCKS_TO_INGEST=1000000
 ENV BLOCKS_CHUNK_SIZE=100
 
 EXPOSE 3000
