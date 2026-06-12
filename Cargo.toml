@@ -4,9 +4,9 @@ version = "0.1.1"
 edition = "2021"
 
 [dependencies]
-alloy = { version = "1.8.3", features = ["provider-http", "rpc-types"] }
+alloy = { version = "2.0", features = ["provider-http", "rpc-types"] }
 serde = { version = "1.0", features = ["derive"] }
-tokio = { version = "1.50", features = ["full", "macros"] }
+tokio = { version = "1.52", features = ["full", "macros"] }
 log = "0.4"
 anyhow = { version = "1.0" }
 simple_logger = "5.2"
